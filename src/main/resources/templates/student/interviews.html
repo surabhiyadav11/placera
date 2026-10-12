@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Interview Schedule')}">
+    <title>Interview Schedule - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Student Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('student', 'interviews')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Interview Schedule', ${profile != null ? profile.fullName : 'Student'}, 'ROLE_STUDENT')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Title & Information -->
+            <div style="margin-bottom: 1.75rem;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                    Scheduled Interview Timeline
+                </h1>
+                <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                    Keep track of multi-round technical assessments, HR discussions, and direct virtual meeting invitations.
+                </p>
+            </div>
+
+            <!-- Interviews Container -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table" style="margin-bottom: 0;">
+                        <thead>
+                        <tr>
+                            <th>Recruiter &amp; Role</th>
+                            <th>Round Name</th>
+                            <th>Date &amp; Time</th>
+                            <th>Format</th>
+                            <th>Venue / Meet Link</th>
+                            <th>Status</th>
+                            <th>Interviewer Notes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="round : ${interviews}">
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a;" th:text="${round.jobApplication.jobPosting.company.companyName}">Company Name</div>
+                                <div style="font-size: 0.8125rem; color: #64748b;" th:text="${round.jobApplication.jobPosting.jobTitle}">Job Title</div>
+                            </td>
+                            <td>
+                                <span style="font-weight: 600; color: #1e293b;" th:text="${round.roundName}">Technical Assessment Round 1</span>
+                            </td>
+                            <td style="font-size: 0.875rem; color: #0f172a; font-weight: 500;">
+                                <div th:text="${#temporals.format(round.interviewDateTime, 'dd MMM yyyy')}">15 Oct 2026</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="${#temporals.format(round.interviewDateTime, 'hh:mm a')}">10:00 AM</div>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${round.format == T(com.placement.entity.InterviewSchedule.InterviewFormat).ONLINE} ? 'badge-info' : 'badge-warning'"
+                                      th:text="${round.format}">ONLINE</span>
+                            </td>
+                            <td>
+                                <div th:if="${round.locationOrLink != null and !round.locationOrLink.isEmpty()}">
+                                    <a th:if="${round.locationOrLink.startsWith('http')}" th:href="${round.locationOrLink}" target="_blank"
+                                       class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none;">
+                                        🔗 Join Meeting &rarr;
+                                    </a>
+                                    <span th:unless="${round.locationOrLink.startsWith('http')}"
+                                          style="font-size: 0.8125rem; color: #334155; font-weight: 500;"
+                                          th:text="${round.locationOrLink}">Room 302, Placement Lab</span>
+                                </div>
+                                <span th:if="${round.locationOrLink == null or round.locationOrLink.isEmpty()}" style="color: #94a3b8; font-size: 0.8125rem;">TBA by HR</span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${round.status == T(com.placement.entity.InterviewSchedule.InterviewStatus).COMPLETED} ? 'badge-success' : (${round.status == T(com.placement.entity.InterviewSchedule.InterviewStatus).CANCELLED} ? 'badge-danger' : 'badge-info')"
+                                      th:text="${round.status}">SCHEDULED</span>
+                            </td>
+                            <td>
+                                <span th:if="${round.notes != null and !round.notes.isEmpty()}"
+                                      style="font-size: 0.8125rem; color: #475569; font-style: italic;"
+                                      th:text="${round.notes}">Please prepare DSA code samples.</span>
+                                <span th:if="${round.notes == null or round.notes.isEmpty()}" style="color: #94a3b8; font-size: 0.8125rem;">&mdash;</span>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${interviews == null or interviews.isEmpty()}">
+                            <td colspan="7" class="text-center" style="padding: 3rem 1.5rem;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📅</div>
+                                <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Interviews Scheduled</h3>
+                                <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                                    When recruiters shortlist your applications for technical assessments or HR discussions, schedules will appear here.
+                                </p>
+                                <a th:href="@{/student/applications}" class="btn btn-outline">Check Application Status &rarr;</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

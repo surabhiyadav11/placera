@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Student Dashboard')}">
+    <title>Student Dashboard - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Student Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('student', 'dashboard')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Student Dashboard', ${profile != null ? profile.fullName : 'Student'}, 'ROLE_STUDENT')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Resume Warning Banner if missing -->
+            <div th:if="${profile != null and !profile.hasUploadedResume()}" class="alert alert-warning" style="margin-bottom: 1.5rem;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 22px; height: 22px; flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <div style="flex: 1;">
+                    <strong>Action Required:</strong> You have not uploaded your official resume yet. Companies require a verified resume to consider applications.
+                </div>
+                <a th:href="@{/student/profile}" class="btn btn-primary btn-sm" style="background: #d97706; border-color: #d97706;">Upload Resume &rarr;</a>
+            </div>
+
+            <!-- Welcome Header Greeting -->
+            <div style="margin-bottom: 1.75rem;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                    Hello, <span th:text="${profile != null ? profile.fullName : 'Student'}">Candidate</span> 👋
+                </h1>
+                <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                    Track your active job applications, interview timelines, and discover verified campus opportunities.
+                </p>
+            </div>
+
+            <!-- 4 KPI Stat Metric Cards -->
+            <div class="stats-grid-container" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" th:text="${appliedCount != null ? appliedCount : 0}">0</span>
+                        <span class="stat-label">Applications Submitted</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" th:text="${shortlistedCount != null ? shortlistedCount : 0}">0</span>
+                        <span class="stat-label">Shortlisted Applications</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" th:text="${interviewCount != null ? interviewCount : 0}">0</span>
+                        <span class="stat-label">Interview Rounds</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" th:text="${selectedCount != null ? selectedCount : 0}">0</span>
+                        <span class="stat-label">Offers Selected</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Workbench Layout -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+                <!-- LEFT COLUMN: Profile Summary & Eligible Jobs -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Academic Profile Overview Card -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">Academic Profile Summary</h3>
+                            <a th:href="@{/student/profile}" class="btn btn-outline btn-sm">Edit Profile &rarr;</a>
+                        </div>
+                        <div class="card-body" th:if="${profile != null}">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; font-size: 0.875rem;">
+                                <div>
+                                    <span style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; display: block;">Roll Number</span>
+                                    <span style="font-weight: 600; color: #0f172a;" th:text="${profile.rollNumber}">22CSE045</span>
+                                </div>
+                                <div>
+                                    <span style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; display: block;">Department</span>
+                                    <span style="font-weight: 600; color: #0f172a;" th:text="${profile.branch}">Computer Science</span>
+                                </div>
+                                <div>
+                                    <span style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; display: block;">Current CGPA</span>
+                                    <span style="font-weight: 700; color: #2563eb; font-size: 1rem;" th:text="${profile.cgpa}">8.75</span>
+                                </div>
+                                <div>
+                                    <span style="color: #64748b; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; display: block;">Placement Status</span>
+                                    <span class="badge"
+                                          th:classappend="${profile.placementStatus == T(com.placement.entity.StudentProfile.PlacementStatus).PLACED} ? 'badge-success' : 'badge-warning'"
+                                          th:text="${profile.placementStatus}">UNPLACED</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem;">
+                                <span>Verified PDF Resume:</span>
+                                <span th:if="${profile.hasUploadedResume()}">
+                                    <a th:href="@{'/resumes/' + ${profile.resumeFilePath}}" target="_blank" class="badge badge-success" style="text-decoration: none;">
+                                        &#128196; View Resume
+                                    </a>
+                                </span>
+                                <span th:unless="${profile.hasUploadedResume()}" class="badge badge-danger">Not Uploaded</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended & Eligible Jobs -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">Eligible Campus Openings</h3>
+                            <a th:href="@{/student/jobs}" class="btn btn-outline btn-sm">Explore All &rarr;</a>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${eligibleJobs != null and !eligibleJobs.isEmpty()}" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <div th:each="job : ${eligibleJobs}" style="padding: 0.875rem; border: 1px solid #e2e8f0; border-radius: 8px; background: #fafafa; display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h4 style="margin: 0 0 0.25rem 0; font-size: 0.9375rem; font-weight: 600; color: #0f172a;" th:text="${job.jobTitle}">Software Development Engineer</h4>
+                                        <div style="color: #64748b; font-size: 0.8125rem;">
+                                            <span th:text="${job.company.companyName}">Acme Corp</span> &bull;
+                                            <span style="color: #10b981; font-weight: 600;" th:text="${job.ctcLpa + ' LPA'}">14 LPA</span>
+                                        </div>
+                                    </div>
+                                    <a th:href="@{'/student/jobs/' + ${job.id}}" class="btn btn-primary btn-sm">Apply &rarr;</a>
+                                </div>
+                            </div>
+                            <div th:if="${eligibleJobs == null or eligibleJobs.isEmpty()}" class="text-center" style="padding: 1.5rem; color: #64748b; font-size: 0.875rem;">
+                                No eligible job openings at this moment. Check back soon!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Upcoming Interviews & Applications -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Upcoming Interviews Roster -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">Upcoming Interviews</h3>
+                            <a th:href="@{/student/interviews}" class="btn btn-outline btn-sm">All Interviews &rarr;</a>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${upcomingInterviews != null and !upcomingInterviews.isEmpty()}" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <div th:each="round : ${upcomingInterviews}" style="padding: 0.875rem; border-left: 4px solid #2563eb; background: #f8fafc; border-radius: 0 8px 8px 0; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                        <div>
+                                            <h4 style="margin: 0 0 0.25rem 0; font-size: 0.9375rem; font-weight: 600; color: #0f172a;" th:text="${round.roundName}">Technical Round 1</h4>
+                                            <p style="margin: 0; color: #64748b; font-size: 0.8125rem;" th:text="${round.jobApplication.jobPosting.company.companyName}">Company Name</p>
+                                        </div>
+                                        <span class="badge badge-info" th:text="${round.format}">ONLINE</span>
+                                    </div>
+                                    <div style="margin-top: 0.5rem; font-size: 0.8125rem; color: #475569; display: flex; justify-content: space-between; align-items: center;">
+                                        <span th:text="${#temporals.format(round.interviewDateTime, 'dd MMM yyyy, hh:mm a')}">15 Oct 2026, 10:00 AM</span>
+                                        <a th:if="${round.locationOrLink != null}" th:href="${round.locationOrLink}" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: none;">Join Link &rarr;</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${upcomingInterviews == null or upcomingInterviews.isEmpty()}" class="text-center" style="padding: 1.5rem; color: #64748b; font-size: 0.875rem;">
+                                No interview rounds scheduled currently.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Applications Table -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">Recent Applications</h3>
+                            <a th:href="@{/student/applications}" class="btn btn-outline btn-sm">View All &rarr;</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table" style="margin-bottom: 0;">
+                                <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="app : ${recentApplications}">
+                                    <td style="font-weight: 500;" th:text="${app.jobPosting.company.companyName}">Google</td>
+                                    <td th:text="${app.jobPosting.jobTitle}">SDE 1</td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${app.applicationStatus == T(com.placement.entity.JobApplication.ApplicationStatus).SELECTED} ? 'badge-success' : (${app.applicationStatus == T(com.placement.entity.JobApplication.ApplicationStatus).REJECTED} ? 'badge-danger' : (${app.applicationStatus == T(com.placement.entity.JobApplication.ApplicationStatus).SHORTLISTED} ? 'badge-info' : 'badge-warning'))"
+                                              th:text="${app.applicationStatus}">APPLIED</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${recentApplications == null or recentApplications.isEmpty()}">
+                                    <td colspan="3" class="text-center" style="padding: 1.5rem; color: #64748b;">
+                                        You haven't applied to any jobs yet. Browse available jobs to get started!
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

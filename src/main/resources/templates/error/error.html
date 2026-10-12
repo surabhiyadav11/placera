@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/fragments :: htmlHead('Error Encountered')}">
+    <title>Error - Placera</title>
+</head>
+<body class="auth-page">
+
+<div class="auth-wrapper" style="max-width: 600px; margin: 3rem auto;">
+    <div class="auth-card text-center" style="padding: 3rem 2rem;">
+        <!-- Error Status Badge / Icon -->
+        <div style="width: 72px; height: 72px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 38px; height: 38px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+
+        <span class="badge badge-danger" style="font-size: 0.8125rem; padding: 0.35rem 0.75rem; margin-bottom: 0.75rem;"
+              th:text="${'Error Status: ' + (statusCode != null ? statusCode : 500)}">Error Status: 500</span>
+
+        <h2 style="font-size: 1.625rem; font-weight: 700; color: #0f172a; margin: 0.5rem 0 0.75rem 0;"
+            th:text="${errorTitle != null ? errorTitle : 'An Unexpected Error Occurred'}">An Unexpected Error Occurred</h2>
+
+        <p style="color: #64748b; font-size: 0.9375rem; line-height: 1.6; margin-bottom: 2rem;"
+           th:text="${errorMessage != null ? errorMessage : 'The requested operation could not be completed. Please try again or return to your portal dashboard.'}">
+            The requested operation could not be completed.
+        </p>
+
+        <!-- Navigation Buttons -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 360px; margin: 0 auto;">
+            <div sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/dashboard}" class="btn btn-primary btn-block">
+                    Return to Admin Dashboard &rarr;
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('COMPANY')">
+                <a th:href="@{/company/dashboard}" class="btn btn-primary btn-block">
+                    Return to Recruiter Dashboard &rarr;
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('STUDENT')">
+                <a th:href="@{/student/dashboard}" class="btn btn-primary btn-block">
+                    Return to Student Dashboard &rarr;
+                </a>
+            </div>
+
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-primary btn-block">
+                    Go to Sign In &rarr;
+                </a>
+            </div>
+
+            <a th:href="@{/}" class="btn btn-outline btn-block">
+                Back to Public Home
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; font-size: 0.8125rem; color: #94a3b8;">
+            Placera Exception Safety Shield &bull; Campus Helpdesk: <a href="mailto:placement@placera.edu" style="color: #64748b; font-weight: 500;">placement@placera.edu</a>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

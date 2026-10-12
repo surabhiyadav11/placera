@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Sign In')}">
+    <title>Sign In - Placera Placement Portal</title>
+</head>
+<body class="auth-page">
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <!-- Brand Header -->
+        <div class="auth-header text-center">
+            <a th:href="@{/}" class="brand-link" style="justify-content: center; margin-bottom: 0.75rem;">
+                <div class="brand-badge">P</div>
+                <div style="text-align: left;">
+                    <div class="brand-title">Placera</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">Placement Portal</div>
+                </div>
+            </a>
+            <h2 class="auth-title">Welcome Back</h2>
+            <p class="auth-subtitle">Sign in with your institutional credentials to access your dedicated portal.</p>
+        </div>
+
+        <!-- Feedback Alerts -->
+        <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 1.25rem;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span th:text="${errorMessage}">Invalid email address or password.</span>
+        </div>
+
+        <div th:if="${logoutMessage}" class="alert alert-success" style="margin-bottom: 1.25rem;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span th:text="${logoutMessage}">You have been signed out successfully.</span>
+        </div>
+
+        <!-- Sign In Form -->
+        <form th:action="@{/login}" method="POST" class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="username" class="form-label">Email Address <span class="text-danger">*</span></label>
+                <div class="input-icon-group">
+                    <input type="email" id="username" name="username" class="form-control"
+                           placeholder="e.g. yourname@college.edu" required autofocus autocomplete="username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.375rem;">
+                    <label for="password" class="form-label" style="margin-bottom: 0;">Password <span class="text-danger">*</span></label>
+                </div>
+                <div class="input-icon-group">
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="••••••••••••" required autocomplete="current-password">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitLoginBtn">
+                    Sign In to Portal &rarr;
+                </button>
+            </div>
+        </form>
+
+        <!-- Demo Credentials Helper Callout -->
+        <div style="margin-top: 1.5rem; padding: 1rem; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 0.8125rem;">
+            <div style="font-weight: 600; color: #334155; margin-bottom: 0.25rem;">Default Demo Credentials:</div>
+            <div style="color: #64748b; line-height: 1.4;">
+                <strong>Admin:</strong> <code>admin@placera.edu</code> / <code>Admin@1234</code><br>
+                <strong>Company / Student:</strong> Use your registered email &amp; password
+            </div>
+        </div>
+
+        <!-- Registration & Navigation Links -->
+        <div class="auth-footer text-center" style="margin-top: 1.5rem; font-size: 0.875rem;">
+            <p style="color: #64748b; margin-bottom: 0.5rem;">
+                Don't have an account yet?
+            </p>
+            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                <a th:href="@{/register/student}" class="text-primary" style="font-weight: 500;">Register as Student</a>
+                <span style="color: #cbd5e1;">&bull;</span>
+                <a th:href="@{/register/company}" class="text-primary" style="font-weight: 500;">Register as Recruiter</a>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a th:href="@{/}" style="color: #94a3b8; text-decoration: none; font-size: 0.8125rem;">&larr; Back to Public Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

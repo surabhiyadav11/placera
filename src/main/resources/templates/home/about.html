@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('About T&amp;P Cell')}">
+    <title>About T&amp;P Cell - Placera</title>
+</head>
+<body class="public-page">
+
+<!-- PUBLIC NAVIGATION BAR -->
+<header class="public-nav">
+    <div class="public-nav-container">
+        <a th:href="@{/}" class="brand-link">
+            <div class="brand-badge">P</div>
+            <div>
+                <span class="brand-title">Placera</span>
+                <span class="brand-subtitle">Placement Portal</span>
+            </div>
+        </a>
+
+        <nav class="public-nav-links">
+            <a th:href="@{/}" class="public-nav-item">Home</a>
+            <a th:href="@{/about}" class="public-nav-item active">About T&amp;P Cell</a>
+            <a th:href="@{/#jobs-section}" class="public-nav-item">Featured Jobs</a>
+            <a th:href="@{/#portals-section}" class="public-nav-item">Portals</a>
+        </nav>
+
+        <div class="public-nav-actions">
+            <a th:href="@{/login}" class="btn btn-outline">Sign In</a>
+            <a th:href="@{/register}" class="btn btn-primary">Register Now</a>
+        </div>
+    </div>
+</header>
+
+<!-- ABOUT HERO BANNER -->
+<section class="hero-section" style="padding: 4rem 1.5rem 3rem;">
+    <div class="hero-container text-center">
+        <div class="hero-badge">🏛️ Training &amp; Placement Cell</div>
+        <h1 class="hero-title" style="margin-bottom: 1rem;">Nurturing Talent, Driving Industrial Excellence</h1>
+        <p class="hero-subtitle" style="max-width: 780px; margin: 0 auto;">
+            The Training and Placement Cell acts as the premier interface between graduating scholars
+            and industry leaders. We foster employability through structured technical rigor, professional aptitude training,
+            and ethical career guidance.
+        </p>
+    </div>
+</section>
+
+<!-- OBJECTIVES & MISSION SECTION -->
+<section class="section-container" style="padding: 3rem 1.5rem;">
+    <div class="portals-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+        <div class="portal-card">
+            <div class="portal-card-header">
+                <div class="portal-card-badge" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">🎯</div>
+                <h3>Our Core Mission</h3>
+            </div>
+            <p class="portal-card-desc">
+                To achieve 100% placement opportunity for all eligible undergraduates through transparent, merit-driven,
+                and meritocratic recruitment drives backed by cutting-edge digital infrastructure.
+            </p>
+            <ul class="portal-features-list">
+                <li>Equal opportunity campus recruitment</li>
+                <li>Comprehensive pre-placement mock assessments</li>
+                <li>Industry feedback loop and curriculum alignment</li>
+            </ul>
+        </div>
+
+        <div class="portal-card">
+            <div class="portal-card-header">
+                <div class="portal-card-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">💡</div>
+                <h3>Academic &amp; Skill Development</h3>
+            </div>
+            <p class="portal-card-desc">
+                Continuous training modules in Object-Oriented Software Design, Data Structures, System Design,
+                Aptitude, and Corporate Communication delivered by corporate mentors and alumni.
+            </p>
+            <ul class="portal-features-list">
+                <li>Object-Oriented Programming (OOP) masterclasses</li>
+                <li>Coding challenges and hackathons</li>
+                <li>Soft skills, interview readiness, and viva clinics</li>
+            </ul>
+        </div>
+
+        <div class="portal-card">
+            <div class="portal-card-header">
+                <div class="portal-card-badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">🤝</div>
+                <h3>Corporate Engagement</h3>
+            </div>
+            <p class="portal-card-desc">
+                Cultivating long-standing partnerships with Fortune 500 corporations, high-growth unicorn startups,
+                and research organizations for internships and full-time hiring.
+            </p>
+            <ul class="portal-features-list">
+                <li>Streamlined on-campus &amp; virtual drives</li>
+                <li>Dedicated interview infrastructure and labs</li>
+                <li>Transparent offer letter dissemination</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- PLACEMENT POLICY & PROCESS GUIDELINES -->
+<section class="section-container" style="padding: 2rem 1.5rem 4rem;">
+    <div class="section-header text-center">
+        <span class="section-tag">Institutional Compliance</span>
+        <h2 class="section-title">Campus Placement Process &amp; Guidelines</h2>
+        <p class="section-subtitle">A transparent 4-stage lifecycle governing all placement operations on Placera.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-weight: 700; color: #2563eb; font-size: 1.25rem; margin-bottom: 0.5rem;">Stage 01</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #0f172a;">Student Registration &amp; Verification</h4>
+            <p style="color: #64748b; font-size: 0.875rem; line-height: 1.5; margin: 0;">
+                Students register with verified academic records (CGPA, backlogs, department) and upload their standard PDF resume.
+            </p>
+        </div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-weight: 700; color: #10b981; font-size: 1.25rem; margin-bottom: 0.5rem;">Stage 02</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #0f172a;">Recruiter Onboarding &amp; Verification</h4>
+            <p style="color: #64748b; font-size: 0.875rem; line-height: 1.5; margin: 0;">
+                Companies register their corporate details and undergo T&amp;P Administrator review and approval before job creation.
+            </p>
+        </div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-weight: 700; color: #f59e0b; font-size: 1.25rem; margin-bottom: 0.5rem;">Stage 03</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #0f172a;">Drive Notification &amp; Application</h4>
+            <p style="color: #64748b; font-size: 0.875rem; line-height: 1.5; margin: 0;">
+                Approved companies post openings. Placera automatically screens candidate eligibility (CGPA threshold) prior to application submission.
+            </p>
+        </div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-weight: 700; color: #8b5cf6; font-size: 1.25rem; margin-bottom: 0.5rem;">Stage 04</div>
+            <h4 style="margin: 0 0 0.5rem 0; color: #0f172a;">Interview Scheduling &amp; Final Offer</h4>
+            <p style="color: #64748b; font-size: 0.875rem; line-height: 1.5; margin: 0;">
+                Shortlisted candidates receive structured interview rounds and timeline notifications. Final selections are logged and marked placed.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- T&P CELL LEADERSHIP & CONTACT -->
+<section style="background: #f1f5f9; padding: 3.5rem 1.5rem; border-top: 1px solid #e2e8f0;">
+    <div class="section-container" style="max-width: 900px; margin: 0 auto; text-align: center;">
+        <span class="section-tag">Get in Touch</span>
+        <h2 class="section-title">Training &amp; Placement Cell Office</h2>
+        <p style="color: #475569; margin-bottom: 2rem;">
+            Administrative Block, 3rd Floor, Campus Center<br>
+            Official Helpdesk: <a href="mailto:placement@placera.edu" style="color: #2563eb; font-weight: 600;">placement@placera.edu</a> | Helpline: +91 98765 43210
+        </p>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a th:href="@{/register/student}" class="btn btn-primary">Join Placement Drive</a>
+            <a th:href="@{/register/company}" class="btn btn-outline" style="background: white;">Corporate Recruiter Onboarding</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer th:replace="~{layout/fragments :: footer}">
+    <p>&copy; 2026 Placera Placement Management System.</p>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

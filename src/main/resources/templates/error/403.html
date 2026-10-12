@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/fragments :: htmlHead('403 - Access Denied')}">
+    <title>403 Forbidden - Placera</title>
+</head>
+<body class="auth-page">
+
+<div class="auth-wrapper" style="max-width: 580px; margin: 3rem auto;">
+    <div class="auth-card text-center" style="padding: 3rem 2rem;">
+        <!-- Security Shield Icon -->
+        <div style="width: 72px; height: 72px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 40px; height: 40px;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+        </div>
+
+        <span class="badge badge-danger" style="font-size: 0.8125rem; padding: 0.35rem 0.75rem; margin-bottom: 0.75rem;">HTTP 403 &bull; Access Forbidden</span>
+        <h2 style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 0.5rem 0 0.75rem 0;">Unauthorized Access Attempt</h2>
+        <p style="color: #64748b; font-size: 0.9375rem; line-height: 1.6; margin-bottom: 2rem;">
+            You do not possess the required security role or permission level to access this portal or resource.
+            Placera enforces strict role-based portal isolation between students, recruiters, and placement officers.
+        </p>
+
+        <!-- Dynamic Redirection Buttons Based on User Role -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 360px; margin: 0 auto;">
+            <div sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/dashboard}" class="btn btn-primary btn-block">
+                    Return to Admin Dashboard &rarr;
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('COMPANY')">
+                <a th:href="@{/company/dashboard}" class="btn btn-primary btn-block">
+                    Return to Recruiter Dashboard &rarr;
+                </a>
+            </div>
+
+            <div sec:authorize="hasRole('STUDENT')">
+                <a th:href="@{/student/dashboard}" class="btn btn-primary btn-block">
+                    Return to Student Dashboard &rarr;
+                </a>
+            </div>
+
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-primary btn-block">
+                    Sign In to Portal &rarr;
+                </a>
+            </div>
+
+            <a th:href="@{/}" class="btn btn-outline btn-block">
+                Back to Public Home
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; font-size: 0.8125rem; color: #94a3b8;">
+            Placera Access Control Security Guard &bull; Need help? Contact <a href="mailto:placement@placera.edu" style="color: #64748b; font-weight: 500;">placement@placera.edu</a>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

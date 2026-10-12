@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Recruiter Registration')}">
+    <title>Recruiter Registration - Placera</title>
+</head>
+<body class="auth-page">
+
+<div class="auth-wrapper" style="max-width: 680px; margin: 2rem auto;">
+    <div class="auth-card" style="padding: 2.5rem;">
+        <!-- Brand Header -->
+        <div class="auth-header text-center">
+            <a th:href="@{/}" class="brand-link" style="justify-content: center; margin-bottom: 0.75rem;">
+                <div class="brand-badge">P</div>
+                <div style="text-align: left;">
+                    <div class="brand-title">Placera</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">Placement Portal</div>
+                </div>
+            </a>
+            <h2 class="auth-title">Corporate Recruiter Onboarding</h2>
+            <p class="auth-subtitle">Partner with our university placement cell to post job vacancies and conduct campus recruitment drives.</p>
+        </div>
+
+        <!-- Verification Notice Callout -->
+        <div class="alert alert-info" style="margin-bottom: 1.5rem; font-size: 0.8125rem;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div>
+                <strong>Notice on Account Verification:</strong> As per institutional policy, newly registered company profiles undergo rapid review by the Training &amp; Placement Cell administrator before job openings can be published.
+            </div>
+        </div>
+
+        <!-- Flash Error Alert -->
+        <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 1.5rem;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span th:text="${errorMessage}">Registration error occurred.</span>
+        </div>
+
+        <!-- Registration Form -->
+        <form th:action="@{/register/company}" th:object="${companyDto}" method="POST" class="auth-form" id="companyRegisterForm">
+            <!-- Company Name & Login Email -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label for="companyName" class="form-label">Company / Organization Name <span class="text-danger">*</span></label>
+                    <input type="text" id="companyName" th:field="*{companyName}" class="form-control"
+                           th:classappend="${#fields.hasErrors('companyName')} ? 'is-invalid' : ''"
+                           placeholder="e.g. Google India / TCS / Infosys" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Portal Login Email <span class="text-danger">*</span></label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control"
+                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                           placeholder="e.g. campus-hr@company.com" required autocomplete="username">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+            </div>
+
+            <!-- Password & Contact Person -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label for="password" class="form-label">Account Password <span class="text-danger">*</span></label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control"
+                           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                           placeholder="Min. 6 characters" required autocomplete="new-password">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactPerson" class="form-label">Primary HR / Contact Person <span class="text-danger">*</span></label>
+                    <input type="text" id="contactPerson" th:field="*{contactPerson}" class="form-control"
+                           th:classappend="${#fields.hasErrors('contactPerson')} ? 'is-invalid' : ''"
+                           placeholder="e.g. John Doe (Lead Recruiter)" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('contactPerson')}" th:errors="*{contactPerson}"></div>
+                </div>
+            </div>
+
+            <!-- Industry & Location -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label for="industry" class="form-label">Industry Domain <span class="text-danger">*</span></label>
+                    <select id="industry" th:field="*{industry}" class="form-control"
+                            th:classappend="${#fields.hasErrors('industry')} ? 'is-invalid' : ''" required>
+                        <option value="">Select Industry</option>
+                        <option value="Information Technology & Services">Information Technology &amp; Services</option>
+                        <option value="Software Product Development">Software Product Development</option>
+                        <option value="Banking & Financial Services (BFSI)">Banking &amp; Financial Services (BFSI)</option>
+                        <option value="Management & Tech Consulting">Management &amp; Tech Consulting</option>
+                        <option value="Automotive & Manufacturing">Automotive &amp; Manufacturing</option>
+                        <option value="E-Commerce & Retail">E-Commerce &amp; Retail</option>
+                        <option value="Telecommunications">Telecommunications</option>
+                        <option value="Healthcare & Life Sciences">Healthcare &amp; Life Sciences</option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('industry')}" th:errors="*{industry}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location" class="form-label">Headquarters / City <span class="text-danger">*</span></label>
+                    <input type="text" id="location" th:field="*{location}" class="form-control"
+                           th:classappend="${#fields.hasErrors('location')} ? 'is-invalid' : ''"
+                           placeholder="e.g. Bangalore / Hyderabad / Noida" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+                </div>
+            </div>
+
+            <!-- Website & Phone -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                <div class="form-group">
+                    <label for="website" class="form-label">Company Website URL</label>
+                    <input type="url" id="website" th:field="*{website}" class="form-control"
+                           placeholder="https://www.company.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">Recruiter Contact Phone</label>
+                    <input type="tel" id="phone" th:field="*{phone}" class="form-control"
+                           placeholder="+91 98765 43210">
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description" class="form-label">About the Organization</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="3"
+                          placeholder="Brief overview of company culture, domains of excellence, and engineering stack..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitCompanyRegBtn">
+                    Submit Recruiter Registration &rarr;
+                </button>
+            </div>
+        </form>
+
+        <!-- Footer Links -->
+        <div class="auth-footer text-center" style="margin-top: 1.5rem; font-size: 0.875rem;">
+            <p style="color: #64748b; margin-bottom: 0.5rem;">
+                Already registered with Placera? <a th:href="@{/login}" class="text-primary" style="font-weight: 600;">Sign In</a>
+            </p>
+            <div style="margin-top: 0.5rem;">
+                <a th:href="@{/register}" style="color: #94a3b8; text-decoration: none; font-size: 0.8125rem;">&larr; Switch account type</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Explore Campus Jobs')}">
+    <title>Campus Jobs - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Student Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('student', 'jobs')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Explore Campus Jobs', ${profile != null ? profile.fullName : 'Student'}, 'ROLE_STUDENT')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header & Search Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Campus Placement Openings
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Browse verified career openings. Your current CGPA (<strong th:text="${profile != null ? profile.cgpa : '0.0'}">8.5</strong>) automatically evaluates eligibility.
+                    </p>
+                </div>
+
+                <!-- Keyword Search Form -->
+                <form th:action="@{/student/jobs}" method="GET" style="display: flex; gap: 0.5rem; max-width: 400px; width: 100%;">
+                    <input type="text" name="keyword" th:value="${keyword}" class="form-control"
+                           placeholder="Search role, skills, company..." style="font-size: 0.875rem;">
+                    <button type="submit" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 4px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Search
+                    </button>
+                    <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/student/jobs}" class="btn btn-outline btn-sm" title="Clear Search">
+                        ✕
+                    </a>
+                </form>
+            </div>
+
+            <!-- Jobs Grid -->
+            <div th:if="${jobs != null and !jobs.isEmpty()}" class="jobs-showcase-grid">
+                <div th:each="job : ${jobs}" class="job-card">
+                    <!-- Top section -->
+                    <div class="job-card-top">
+                        <div>
+                            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem;">
+                                <span class="badge badge-info" th:text="${job.jobType}">FULL_TIME</span>
+
+                                <!-- Applied Badge -->
+                                <span th:if="${appliedMap.get(job.id)}" class="badge badge-success">
+                                    &#10003; Applied
+                                </span>
+
+                                <!-- Eligibility Badge if not applied -->
+                                <th:block th:unless="${appliedMap.get(job.id)}">
+                                    <span th:if="${eligibilityMap.get(job.id)}" class="badge badge-success">
+                                        Eligible
+                                    </span>
+                                    <span th:unless="${eligibilityMap.get(job.id)}" class="badge badge-danger">
+                                        CGPA Ineligible
+                                    </span>
+                                </th:block>
+                            </div>
+
+                            <h4 class="job-title" th:text="${job.jobTitle}" style="margin: 0 0 0.25rem 0;">Software Development Engineer</h4>
+                            <p class="company-name" th:text="${job.company.companyName}" style="color: #64748b; font-weight: 500; margin: 0;">Google</p>
+                        </div>
+
+                        <div class="job-ctc-tag">
+                            <span class="ctc-val" th:text="${job.ctcLpa + ' LPA'}">18 LPA</span>
+                        </div>
+                    </div>
+
+                    <!-- Meta Information -->
+                    <div class="job-card-meta">
+                        <span class="meta-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span th:text="${job.location != null ? job.location : 'Flexible'}">Bangalore</span>
+                        </span>
+                        <span class="meta-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span th:text="${'Min CGPA: ' + job.minCgpa}">Min CGPA: 7.5</span>
+                        </span>
+                    </div>
+
+                    <!-- Description Excerpt -->
+                    <p class="job-description-excerpt" th:text="${#strings.abbreviate(job.jobDescription, 130)}">
+                        Seeking talented engineers with knowledge of OOP principles and algorithms.
+                    </p>
+
+                    <!-- Bottom Action Footer -->
+                    <div class="job-card-bottom">
+                        <span class="deadline-text" th:if="${job.deadline != null}"
+                              th:text="${'Deadline: ' + #temporals.format(job.deadline, 'dd MMM yyyy')}">
+                            Deadline: 31 Oct 2026
+                        </span>
+                        <span class="deadline-text" th:if="${job.deadline == null}">Open Ongoing</span>
+
+                        <a th:href="@{'/student/jobs/' + ${job.id}}" class="btn btn-sm"
+                           th:classappend="${appliedMap.get(job.id)} ? 'btn-outline' : (${eligibilityMap.get(job.id)} ? 'btn-primary' : 'btn-ghost')">
+                            <span th:if="${appliedMap.get(job.id)}">View Application &rarr;</span>
+                            <span th:if="${!appliedMap.get(job.id) and eligibilityMap.get(job.id)}">Apply Now &rarr;</span>
+                            <span th:if="${!appliedMap.get(job.id) and !eligibilityMap.get(job.id)}">View Details &rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty Search Results State -->
+            <div th:if="${jobs == null or jobs.isEmpty()}" class="empty-state-box text-center">
+                <div class="empty-icon">🔍</div>
+                <h3>No Job Postings Found</h3>
+                <p>No active campus recruitment drives matched your current filter criteria.</p>
+                <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/student/jobs}" class="btn btn-outline" style="margin-top: 1rem;">
+                    Clear Filter
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

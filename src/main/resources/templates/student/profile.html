@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Student Profile &amp; Resume')}">
+    <title>Profile &amp; Resume - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Student Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('student', 'profile')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Profile &amp; Resume', ${profile != null ? profile.fullName : 'Student'}, 'ROLE_STUDENT')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Header Title -->
+            <div style="margin-bottom: 1.75rem;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                    Candidate Profile &amp; Resume
+                </h1>
+                <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                    Maintain your verified academic credentials and standard PDF resume for campus recruiter applications.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+                <!-- LEFT COLUMN: Academic & Personal Profile Editor -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600;">Academic Credentials</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/student/profile}" th:object="${profile}" method="POST" id="profileUpdateForm">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                    <input type="text" id="fullName" th:field="*{fullName}" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">College Email (Locked)</label>
+                                    <input type="email" class="form-control" th:value="${user != null ? user.email : ''}" disabled
+                                           style="background: #f1f5f9; cursor: not-allowed;">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="rollNumber" class="form-label">University Roll No. <span class="text-danger">*</span></label>
+                                    <input type="text" id="rollNumber" th:field="*{rollNumber}" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="branch" class="form-label">Branch / Department <span class="text-danger">*</span></label>
+                                    <select id="branch" th:field="*{branch}" class="form-control" required>
+                                        <option value="Computer Science and Engineering">Computer Science (CSE)</option>
+                                        <option value="Information Technology">Information Technology (IT)</option>
+                                        <option value="Electronics and Communication">Electronics &amp; Comm. (ECE)</option>
+                                        <option value="Electrical and Electronics">Electrical &amp; Electronics (EEE)</option>
+                                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                        <option value="Civil Engineering">Civil Engineering</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="cgpa" class="form-label">Current CGPA <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" max="10" id="cgpa" th:field="*{cgpa}" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="activeBacklogs" class="form-label">Active Backlogs</label>
+                                    <input type="number" min="0" id="activeBacklogs" th:field="*{activeBacklogs}" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="graduationYear" class="form-label">Graduation Year <span class="text-danger">*</span></label>
+                                    <select id="graduationYear" th:field="*{graduationYear}" class="form-control" required>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Contact Phone</label>
+                                    <input type="tel" id="phone" th:field="*{phone}" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Placement Status</label>
+                                    <div style="padding-top: 0.35rem;">
+                                        <span class="badge"
+                                              th:classappend="${profile.placementStatus == T(com.placement.entity.StudentProfile.PlacementStatus).PLACED} ? 'badge-success' : 'badge-warning'"
+                                              th:text="${profile.placementStatus}">UNPLACED</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="skills" class="form-label">Technical Skills (Comma Separated)</label>
+                                <input type="text" id="skills" th:field="*{skills}" class="form-control"
+                                       placeholder="e.g. Java, Python, Spring Boot, OOP, MySQL, Git">
+                            </div>
+
+                            <div class="form-group" style="margin-top: 1.5rem;">
+                                <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                                    Save Profile Changes &rarr;
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: PDF Resume Document Manager -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Resume Upload Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600;">Verified Resume Document</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Current Resume Status Box -->
+                            <div th:if="${profile != null and profile.hasUploadedResume()}"
+                                 style="padding: 1.25rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; margin-bottom: 1.5rem;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="width: 40px; height: 40px; background: #dcfce7; color: #16a34a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                            📄
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #166534; font-size: 0.9375rem;">Resume on File</div>
+                                            <div style="color: #15803d; font-size: 0.8125rem;" th:text="${profile.resumeFilePath}">resume.pdf</div>
+                                        </div>
+                                    </div>
+                                    <a th:href="@{'/resumes/' + ${profile.resumeFilePath}}" target="_blank"
+                                       class="btn btn-outline btn-sm" style="border-color: #16a34a; color: #16a34a; background: white;">
+                                        View / Download &rarr;
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div th:if="${profile == null or !profile.hasUploadedResume()}"
+                                 style="padding: 1.25rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; margin-bottom: 1.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div style="width: 40px; height: 40px; background: #fef3c7; color: #d97706; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                        ⚠️
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #92400e; font-size: 0.9375rem;">No Resume Uploaded</div>
+                                        <div style="color: #b45309; font-size: 0.8125rem;">Please upload your standard PDF resume to enable company applications.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Form -->
+                            <form th:action="@{/student/resume}" method="POST" enctype="multipart/form-data" id="resumeUploadForm">
+                                <div class="form-group">
+                                    <label for="resumeFile" class="form-label">
+                                        Select PDF File <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="file" id="resumeFile" name="resume" class="form-control" accept="application/pdf" required>
+                                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.35rem;">
+                                        Accepted formats: Standard PDF (*.pdf). Maximum file size: 5 MB.
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-top: 1.25rem;">
+                                    <button type="submit" class="btn btn-primary btn-block" id="uploadResumeBtn">
+                                        Upload &amp; Verify Resume &rarr;
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Guidelines Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="margin: 0; font-size: 0.9375rem; font-weight: 600;">Resume Best Practices</h3>
+                        </div>
+                        <div class="card-body" style="font-size: 0.8125rem; color: #475569; line-height: 1.5;">
+                            <ul style="padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <li>Ensure your contact information and GitHub / LinkedIn links are functional.</li>
+                                <li>Highlight core Object-Oriented Programming (OOP) concepts, projects, and tech stacks.</li>
+                                <li>Double-check CGPA and academic year details to ensure alignment with college records.</li>
+                                <li>Update your resume prior to submitting applications to new placement drives.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

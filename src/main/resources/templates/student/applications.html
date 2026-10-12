@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('My Applications')}">
+    <title>My Applications - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Student Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('student', 'applications')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('My Applications', ${profile != null ? profile.fullName : 'Student'}, 'ROLE_STUDENT')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Title & Live Filter -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Application Roster
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Monitor your campus drive submissions, recruiter reviews, and final selection statuses in real time.
+                    </p>
+                </div>
+
+                <!-- Instant Live Filter Input -->
+                <div style="max-width: 320px; width: 100%;">
+                    <input type="text" class="form-control" data-table-filter="applicationsTable"
+                           placeholder="Filter by company, role, status..." style="font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <!-- Applications Card & Table -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table" id="applicationsTable" style="margin-bottom: 0;">
+                        <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Role &amp; Details</th>
+                            <th>CTC</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Recruiter Remarks</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="app : ${applications}">
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a;" th:text="${app.jobPosting.company.companyName}">Acme Corp</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="${app.jobPosting.company.industry}">Technology</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: #1e293b;" th:text="${app.jobPosting.jobTitle}">Software Development Engineer</div>
+                                <span class="badge badge-info" style="font-size: 0.7rem;" th:text="${app.jobPosting.jobType}">FULL_TIME</span>
+                            </td>
+                            <td style="font-weight: 600; color: #10b981;" th:text="${app.jobPosting.ctcLpa + ' LPA'}">
+                                12 LPA
+                            </td>
+                            <td style="font-size: 0.8125rem; color: #64748b;"
+                                th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy, hh:mm a')}">
+                                14 Oct 2026, 11:30 AM
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${app.applicationStatus == T(com.placement.entity.JobApplication.ApplicationStatus).SELECTED} ? 'badge-success' : (${app.applicationStatus == T(com.placement.entity.JobApplication.ApplicationStatus).REJECTED} ? 'badge-danger' : (${app.applicationStatus == T(com.placement.entity.JobApplication.ApplicationStatus).SHORTLISTED} ? 'badge-info' : 'badge-warning'))"
+                                      th:text="${app.applicationStatus}">
+                                    APPLIED
+                                </span>
+                            </td>
+                            <td>
+                                <span th:if="${app.remarks != null and !app.remarks.isEmpty()}"
+                                      style="font-size: 0.8125rem; color: #334155; font-style: italic;"
+                                      th:text="${app.remarks}">Shortlisted for Tech Interview</span>
+                                <span th:if="${app.remarks == null or app.remarks.isEmpty()}"
+                                      style="color: #94a3b8; font-size: 0.8125rem;">&mdash;</span>
+                            </td>
+                            <td>
+                                <a th:href="@{'/student/jobs/' + ${app.jobPosting.id}}" class="btn btn-outline btn-sm">
+                                    Job Info &rarr;
+                                </a>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${applications == null or applications.isEmpty()}">
+                            <td colspan="7" class="text-center" style="padding: 3rem 1.5rem;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📂</div>
+                                <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Applications Submitted</h3>
+                                <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                                    You have not applied for any campus job openings yet.
+                                </p>
+                                <a th:href="@{/student/jobs}" class="btn btn-primary">Explore Campus Jobs &rarr;</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

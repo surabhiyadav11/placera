@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Edit Job Opening')}">
+    <title>Edit Job Opening - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Company Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('company', 'jobs')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Edit Job Opening', ${profile != null ? profile.companyName : 'Recruiter'}, 'ROLE_COMPANY')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Back Link -->
+            <div style="margin-bottom: 1.25rem;">
+                <a th:href="@{/company/jobs}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                    &larr; Back to Job Postings
+                </a>
+            </div>
+
+            <!-- Card & Edit Form -->
+            <div class="card" style="max-width: 900px;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600;">Edit Job Specifications</h3>
+                    <a th:href="@{'/company/applicants?jobId=' + ${jobId}}" class="btn btn-outline btn-sm">
+                        View Applicants &rarr;
+                    </a>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{'/company/jobs/' + ${jobId} + '/edit'}" th:object="${jobDto}" method="POST" id="editJobForm">
+                        <!-- Job Title & Role -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="title" class="form-label">Job Posting Title <span class="text-danger">*</span></label>
+                                <input type="text" id="title" th:field="*{title}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jobRole" class="form-label">Functional Role / Designation <span class="text-danger">*</span></label>
+                                <input type="text" id="jobRole" th:field="*{jobRole}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('jobRole')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('jobRole')}" th:errors="*{jobRole}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Job Type, Location & CTC -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="jobType" class="form-label">Employment Type <span class="text-danger">*</span></label>
+                                <select id="jobType" th:field="*{jobType}" class="form-control" required>
+                                    <option value="Full-Time">Full-Time</option>
+                                    <option value="Internship">Internship</option>
+                                    <option value="Internship + PPO">Internship + PPO</option>
+                                    <option value="Contract">Contract</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location" class="form-label">Work Location <span class="text-danger">*</span></label>
+                                <input type="text" id="location" th:field="*{location}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('location')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="salaryPackage" class="form-label">CTC Package (in LPA) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.1" min="0" id="salaryPackage" th:field="*{salaryPackage}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('salaryPackage')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('salaryPackage')}" th:errors="*{salaryPackage}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Eligibility: Min CGPA, Eligible Branches, Grad Year -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="minCgpa" class="form-label">Minimum CGPA Cutoff <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" min="0" max="10" id="minCgpa" th:field="*{minCgpa}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('minCgpa')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('minCgpa')}" th:errors="*{minCgpa}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eligibleBranches" class="form-label">Eligible Branches</label>
+                                <input type="text" id="eligibleBranches" th:field="*{eligibleBranches}" class="form-control"
+                                       placeholder="e.g. ALL or CSE, IT, ECE">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="eligibleGraduationYear" class="form-label">Target Batch Year</label>
+                                <select id="eligibleGraduationYear" th:field="*{eligibleGraduationYear}" class="form-control">
+                                    <option value="">Any Eligible Batch</option>
+                                    <option value="2025">2025 Batch</option>
+                                    <option value="2026">2026 Batch</option>
+                                    <option value="2027">2027 Batch</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Application Deadline & Active Checkbox -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="applicationDeadline" class="form-label">Application Deadline <span class="text-danger">*</span></label>
+                                <input type="date" id="applicationDeadline" th:field="*{applicationDeadline}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('applicationDeadline')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('applicationDeadline')}" th:errors="*{applicationDeadline}"></div>
+                            </div>
+
+                            <div class="form-group" style="display: flex; align-items: center; padding-top: 1.75rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; color: #0f172a; font-weight: 500;">
+                                    <input type="checkbox" th:field="*{active}" style="width: 18px; height: 18px;">
+                                    <span>Accept Applications (Role Active)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Required Skills -->
+                        <div class="form-group">
+                            <label for="requiredSkills" class="form-label">Required Tech Stack / Skills</label>
+                            <input type="text" id="requiredSkills" th:field="*{requiredSkills}" class="form-control"
+                                   placeholder="e.g. Java, OOP, Spring Boot, MySQL, REST APIs">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description" class="form-label">Role Description &amp; Responsibilities</label>
+                            <textarea id="description" th:field="*{description}" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <button type="submit" class="btn btn-primary btn-lg" id="updateJobBtn">
+                                Save Updated Specifications &rarr;
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

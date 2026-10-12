@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Organization Profile')}">
+    <title>Organization Profile - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Company Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('company', 'profile')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Organization Profile', ${profile != null ? profile.companyName : 'Recruiter'}, 'ROLE_COMPANY')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Title & Status -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Corporate Recruiter Profile
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Manage public company information, contact points, and verified corporate metadata displayed to students.
+                    </p>
+                </div>
+
+                <!-- Approval Status Pill -->
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.8125rem; color: #64748b;">Verification Status:</span>
+                    <span class="badge"
+                          th:classappend="${profile.approvalStatus == T(com.placement.entity.CompanyProfile.ApprovalStatus).APPROVED} ? 'badge-success' : (${profile.approvalStatus == T(com.placement.entity.CompanyProfile.ApprovalStatus).REJECTED} ? 'badge-danger' : 'badge-warning')"
+                          th:text="${profile.approvalStatus}">APPROVED</span>
+                </div>
+            </div>
+
+            <!-- Profile Form Card -->
+            <div class="card" style="max-width: 900px;">
+                <div class="card-header">
+                    <h3 style="margin: 0; font-size: 1rem; font-weight: 600;">Organization Details</h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/company/profile}" th:object="${profile}" method="POST" id="companyProfileForm">
+                        <!-- Company Name & Login Email -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="companyName" class="form-label">Organization Name <span class="text-danger">*</span></label>
+                                <input type="text" id="companyName" th:field="*{companyName}" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Account Login Email (Locked)</label>
+                                <input type="email" class="form-control" th:value="${user != null ? user.email : ''}" disabled
+                                       style="background: #f1f5f9; cursor: not-allowed;">
+                            </div>
+                        </div>
+
+                        <!-- Contact Person & Contact Email -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="contactPerson" class="form-label">Primary HR / Contact Person <span class="text-danger">*</span></label>
+                                <input type="text" id="contactPerson" th:field="*{contactPerson}" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contactEmail" class="form-label">Contact / Notifications Email</label>
+                                <input type="email" id="contactEmail" th:field="*{contactEmail}" class="form-control"
+                                       placeholder="campus-recruitment@company.com">
+                            </div>
+                        </div>
+
+                        <!-- Industry & Location -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="industry" class="form-label">Industry Domain <span class="text-danger">*</span></label>
+                                <select id="industry" th:field="*{industry}" class="form-control" required>
+                                    <option value="Information Technology & Services">Information Technology &amp; Services</option>
+                                    <option value="Software Product Development">Software Product Development</option>
+                                    <option value="Banking & Financial Services (BFSI)">Banking &amp; Financial Services (BFSI)</option>
+                                    <option value="Management & Tech Consulting">Management &amp; Tech Consulting</option>
+                                    <option value="Automotive & Manufacturing">Automotive &amp; Manufacturing</option>
+                                    <option value="E-Commerce & Retail">E-Commerce &amp; Retail</option>
+                                    <option value="Telecommunications">Telecommunications</option>
+                                    <option value="Healthcare & Life Sciences">Healthcare &amp; Life Sciences</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location" class="form-label">Headquarters / Location <span class="text-danger">*</span></label>
+                                <input type="text" id="location" th:field="*{location}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <!-- Website URL & Phone -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="websiteUrl" class="form-label">Company Website URL</label>
+                                <input type="url" id="websiteUrl" th:field="*{websiteUrl}" class="form-control"
+                                       placeholder="https://www.company.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Recruiter Contact Phone</label>
+                                <input type="tel" id="phone" th:field="*{phone}" class="form-control"
+                                       placeholder="+91 98765 43210">
+                            </div>
+                        </div>
+
+                        <!-- Company Description -->
+                        <div class="form-group">
+                            <label for="companyDescription" class="form-label">About Organization / Engineering Culture</label>
+                            <textarea id="companyDescription" th:field="*{companyDescription}" class="form-control" rows="4"
+                                      placeholder="Provide an overview of your organization, flagship products, and career growth opportunities for graduates..."></textarea>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <button type="submit" class="btn btn-primary" id="saveCompanyProfileBtn">
+                                Save Profile Changes &rarr;
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

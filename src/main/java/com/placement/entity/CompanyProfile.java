@@ -132,6 +132,10 @@ public class CompanyProfile {
         return userAccount;
     }
 
+    public UserAccount getUser() {
+        return userAccount;
+    }
+
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
     }

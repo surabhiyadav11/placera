@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Admin Dashboard')}">
+    <title>Admin Dashboard - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Admin Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('admin', 'dashboard')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Institutional Dashboard', 'Admin Portal')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Pending Companies Urgent Alert Banner -->
+            <div th:if="${pendingCompanies != null and !pendingCompanies.isEmpty()}"
+                 class="alert alert-warning"
+                 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; padding: 1rem 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.5rem;">⚠️</span>
+                    <div>
+                        <strong style="color: #92400e; font-size: 0.9375rem;">
+                            <span th:text="${pendingCompanies.size()}">2</span> Recruiter Account(s) Awaiting Accreditation
+                        </strong>
+                        <div style="color: #b45309; font-size: 0.8125rem;">
+                            Recruiters cannot publish job openings or interact with student applications until approved by placement administration.
+                        </div>
+                    </div>
+                </div>
+                <a th:href="@{/admin/companies}" class="btn btn-warning btn-sm" style="font-weight: 600;">
+                    Review Approval Queue &rarr;
+                </a>
+            </div>
+
+            <!-- Welcome & Season Header -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.625rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Institutional Placement Administration
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Live metrics, corporate accreditation verification, and student placement progress for Academic Year 2026.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a th:href="@{/admin/reports}" class="btn btn-outline btn-sm">📊 Full Analytics</a>
+                    <a th:href="@{/admin/drives}" class="btn btn-primary btn-sm">+ Drive Management</a>
+                </div>
+            </div>
+
+            <!-- KPI Metric Cards Grid -->
+            <div class="grid grid-cols-4" style="gap: 1.25rem; margin-bottom: 2rem;">
+                <!-- Total Students -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div class="stat-label">Registered Candidates</div>
+                            <div class="stat-value" th:text="${stats.totalStudents}">120</div>
+                        </div>
+                        <div style="background-color: #eff6ff; color: #2563eb; padding: 0.5rem; border-radius: 8px; font-size: 1.25rem;">
+                            🎓
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">
+                        Verified academic student profiles
+                    </div>
+                </div>
+
+                <!-- Placed Students & Rate -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div class="stat-label">Placed Candidates</div>
+                            <div class="stat-value" style="color: #16a34a;" th:text="${stats.placedStudents}">45</div>
+                        </div>
+                        <div style="background-color: #f0fdf4; color: #16a34a; padding: 0.5rem; border-radius: 8px; font-size: 1.25rem;">
+                            🎯
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #16a34a; font-weight: 600; margin-top: 0.5rem;">
+                        Placement Rate: <span th:text="${stats.formattedPlacementPercentage}">37.5%</span>
+                    </div>
+                </div>
+
+                <!-- Corporate Partners -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div class="stat-label">Corporate Partners</div>
+                            <div class="stat-value" th:text="${stats.totalCompanies}">18</div>
+                        </div>
+                        <div style="background-color: #fefce8; color: #ca8a04; padding: 0.5rem; border-radius: 8px; font-size: 1.25rem;">
+                            🏢
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #d97706; margin-top: 0.5rem;">
+                        <span th:text="${stats.pendingCompanies}">2</span> awaiting accreditation
+                    </div>
+                </div>
+
+                <!-- Active Openings -->
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <div class="stat-label">Active Campus Roles</div>
+                            <div class="stat-value" style="color: #2563eb;" th:text="${stats.activeJobOpenings}">14</div>
+                        </div>
+                        <div style="background-color: #f5f3ff; color: #7c3aed; padding: 0.5rem; border-radius: 8px; font-size: 1.25rem;">
+                            💼
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">
+                        <span th:text="${stats.totalApplications}">85</span> submissions processed
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Column Section: Pending Approval Queue & Quick Stats -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Pending Approvals Card -->
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            🏢 Recruiter Approval Queue
+                        </h3>
+                        <a th:href="@{/admin/companies}" style="font-size: 0.8125rem; color: #2563eb; text-decoration: none;">
+                            View all &rarr;
+                        </a>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table" style="margin-bottom: 0;">
+                                <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Industry</th>
+                                    <th style="text-align: right;">Decision</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="comp : ${pendingCompanies}">
+                                    <td>
+                                        <div style="font-weight: 600; color: #0f172a;" th:text="${comp.companyName}">Acme Tech</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;" th:if="${comp.website != null}">
+                                            <a th:href="${comp.website}" target="_blank" th:text="${comp.website}" style="color: #2563eb; text-decoration: none;">acme.com</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-neutral" th:text="${comp.industry != null ? comp.industry : 'Corporate'}">IT / Software</span>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <div style="display: inline-flex; gap: 0.35rem;">
+                                            <form th:action="@{'/admin/companies/' + ${comp.id} + '/approve'}" method="POST" style="margin: 0;">
+                                                <button type="submit" class="btn btn-success btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                                    ✓ Approve
+                                                </button>
+                                            </form>
+                                            <form th:action="@{'/admin/companies/' + ${comp.id} + '/reject'}" method="POST" style="margin: 0;">
+                                                <button type="submit" class="btn btn-danger btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;"
+                                                        onclick="return confirm('Are you sure you want to reject this company registration?');">
+                                                    ✕
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${pendingCompanies == null or pendingCompanies.isEmpty()}">
+                                    <td colspan="3" class="text-center" style="padding: 2.5rem 1rem; color: #64748b;">
+                                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+                                        <div style="font-weight: 500; color: #0f172a;">All Corporate Recruiters Verified</div>
+                                        <div style="font-size: 0.75rem; margin-top: 0.25rem;">No registrations pending administrative clearance.</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Campus Job Openings -->
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            💼 Recent Active Campus Openings
+                        </h3>
+                        <a th:href="@{/admin/jobs}" style="font-size: 0.8125rem; color: #2563eb; text-decoration: none;">
+                            View all &rarr;
+                        </a>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table" style="margin-bottom: 0;">
+                                <thead>
+                                <tr>
+                                    <th>Job Role &amp; Company</th>
+                                    <th>Package</th>
+                                    <th>Min CGPA</th>
+                                    <th style="text-align: right;">Deadline</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="job : ${activeJobs}">
+                                    <td>
+                                        <div style="font-weight: 600; color: #0f172a;" th:text="${job.jobTitle}">Senior Software Engineer</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;" th:text="${job.company.companyName}">Google LLC</div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight: 700; color: #2563eb;" th:text="${job.formattedSalary}">18.5 LPA</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-neutral" th:text="${job.minCgpa != null ? '>= ' + job.minCgpa : 'No Cutoff'}">>= 7.5</span>
+                                    </td>
+                                    <td style="text-align: right; font-size: 0.8125rem; color: #64748b;"
+                                        th:text="${job.applicationDeadline != null ? #temporals.format(job.applicationDeadline, 'dd MMM yyyy') : 'Open'}">
+                                        30 Nov 2026
+                                    </td>
+                                </tr>
+                                <tr th:if="${activeJobs == null or activeJobs.isEmpty()}">
+                                    <td colspan="4" class="text-center" style="padding: 2.5rem 1rem; color: #64748b;">
+                                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📂</div>
+                                        <div>No active job openings currently listed.</div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Applications Stream Card -->
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            📄 Recent Candidate Applications Stream
+                        </h3>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.8125rem; color: #64748b;">
+                            Live feed of institutional submissions and candidate progression.
+                        </p>
+                    </div>
+                    <a th:href="@{/admin/applications}" class="btn btn-outline btn-sm">
+                        View Master Records &rarr;
+                    </a>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table" style="margin-bottom: 0;">
+                            <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>CGPA &amp; Branch</th>
+                                <th>Target Company &amp; Role</th>
+                                <th>Submission Date</th>
+                                <th>Application Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="app : ${recentApplications}">
+                                <td>
+                                    <div style="font-weight: 600; color: #0f172a;" th:text="${app.student.fullName}">Rahul Sharma</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;" th:text="${app.student.rollNumber}">22CSE011</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600; color: #2563eb;" th:text="${app.student.cgpa}">8.90</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;" th:text="${app.student.branch}">CSE</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600; color: #0f172a;" th:text="${app.jobPosting.jobTitle}">Systems Engineer</div>
+                                    <div style="font-size: 0.75rem; color: #64748b;" th:text="${app.jobPosting.company.companyName}">Microsoft</div>
+                                </td>
+                                <td style="font-size: 0.8125rem; color: #64748b;"
+                                    th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy, hh:mm a')}">
+                                    12 Oct 2026, 11:30 AM
+                                </td>
+                                <td>
+                                    <span class="badge" th:classappend="${app.status.badgeClass}"
+                                          th:text="${app.status.displayName}">
+                                        Applied
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:if="${recentApplications == null or recentApplications.isEmpty()}">
+                                <td colspan="5" class="text-center" style="padding: 2.5rem 1rem; color: #64748b;">
+                                    <div>No applications submitted yet.</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

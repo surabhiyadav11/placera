@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Company Accreditation Queue')}">
+    <title>Company Approval Queue - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Admin Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('admin', 'companies')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Company Approval Queue', 'Admin Portal')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header & Search Filter -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Recruiter Accreditation &amp; Directory
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Verify corporate recruiter credentials, grant campus hiring permissions, and monitor active employers.
+                    </p>
+                </div>
+
+                <!-- Instant Table Search + Server Search Form -->
+                <div style="display: flex; gap: 0.5rem; max-width: 420px; width: 100%;">
+                    <form th:action="@{/admin/companies}" method="GET" style="display: flex; gap: 0.5rem; width: 100%; margin: 0;">
+                        <input type="text" name="keyword" th:value="${keyword}" class="form-control"
+                               data-table-filter="companiesTable"
+                               placeholder="Search company, industry, contact..." style="font-size: 0.875rem;">
+                        <button type="submit" class="btn btn-outline btn-sm" style="white-space: nowrap;">Search</button>
+                        <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/admin/companies}"
+                           class="btn btn-secondary btn-sm" style="white-space: nowrap;">Clear</a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Status Indicator Pills -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <div class="stat-card" style="padding: 0.875rem 1.25rem; flex: 1; min-width: 200px;">
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Total Corporate Partners</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-top: 0.25rem;"
+                         th:text="${companies != null ? companies.size() : 0}">18</div>
+                </div>
+
+                <div class="stat-card" style="padding: 0.875rem 1.25rem; flex: 1; min-width: 200px; border-left: 4px solid #f59e0b;">
+                    <div style="font-size: 0.75rem; color: #b45309; font-weight: 600; text-transform: uppercase;">Awaiting Accreditation</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #d97706; margin-top: 0.25rem;"
+                         th:text="${pendingCount != null ? pendingCount : 0}">2</div>
+                </div>
+            </div>
+
+            <!-- Companies Master Roster Card -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table" id="companiesTable" style="margin-bottom: 0;">
+                        <thead>
+                        <tr>
+                            <th>Company Profile</th>
+                            <th>Industry &amp; Location</th>
+                            <th>Contact Person</th>
+                            <th>Status</th>
+                            <th>Registration Date</th>
+                            <th style="text-align: right;">Administrative Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="comp : ${companies}">
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a; font-size: 0.9375rem;" th:text="${comp.companyName}">Google LLC</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:if="${comp.website != null and !comp.website.isEmpty()}">
+                                    <a th:href="${comp.website}" target="_blank" rel="noopener noreferrer"
+                                       th:text="${comp.website}" style="color: #2563eb; text-decoration: none;">https://careers.google.com</a>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #94a3b8;" th:if="${comp.user != null}" th:text="${comp.user.email}">recruiter@google.com</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: #1e293b;" th:text="${comp.industry != null ? comp.industry : 'Corporate'}">Technology / Software</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="${comp.location != null ? comp.location : 'Campus Partner'}">Bangalore / Hybrid</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: #1e293b;" th:text="${comp.contactPerson}">Priya Nair</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:if="${comp.phone != null}" th:text="${comp.phone}">+91 9876543210</div>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${comp.approvalStatus == T(com.placement.entity.CompanyProfile.ApprovalStatus).APPROVED} ? 'badge-success' : (${comp.approvalStatus == T(com.placement.entity.CompanyProfile.ApprovalStatus).REJECTED} ? 'badge-danger' : 'badge-warning')"
+                                      th:text="${comp.approvalStatus.displayName}">
+                                    Pending Verification
+                                </span>
+                                <div th:if="${comp.rejectionReason != null and !comp.rejectionReason.isEmpty()}"
+                                     style="font-size: 0.7rem; color: #dc2626; margin-top: 0.25rem;" th:text="'Note: ' + ${comp.rejectionReason}">
+                                    Missing tax registration
+                                </div>
+                            </td>
+                            <td style="font-size: 0.8125rem; color: #64748b;"
+                                th:text="${comp.createdAt != null ? #temporals.format(comp.createdAt, 'dd MMM yyyy') : 'N/A'}">
+                                01 Oct 2026
+                            </td>
+                            <td style="text-align: right;">
+                                <div style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                                    <!-- Approve Action Button -->
+                                    <form th:if="${comp.approvalStatus != T(com.placement.entity.CompanyProfile.ApprovalStatus).APPROVED}"
+                                          th:action="@{'/admin/companies/' + ${comp.id} + '/approve'}" method="POST" style="margin: 0;">
+                                        <button type="submit" class="btn btn-success btn-sm" style="font-size: 0.75rem;">
+                                            ✓ Approve
+                                        </button>
+                                    </form>
+
+                                    <!-- Reject Action Button / Form -->
+                                    <form th:if="${comp.approvalStatus != T(com.placement.entity.CompanyProfile.ApprovalStatus).REJECTED}"
+                                          th:action="@{'/admin/companies/' + ${comp.id} + '/reject'}" method="POST" style="margin: 0;"
+                                          onsubmit="return confirm('Confirm rejecting accreditation for this company?');">
+                                        <input type="hidden" name="reason" value="Administrative policy review">
+                                        <button type="submit" class="btn btn-danger btn-sm" style="font-size: 0.75rem;">
+                                            ✕ Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${companies == null or companies.isEmpty()}">
+                            <td colspan="6" class="text-center" style="padding: 3rem 1.5rem;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🏢</div>
+                                <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Corporate Employers Found</h3>
+                                <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1rem;">
+                                    Registered company profiles will appear here for verification and campus hiring privileges.
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

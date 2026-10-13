@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Interview Coordination')}">
+    <title>Interview Coordination - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Company Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('company', 'interviews')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Interview Coordination', ${profile != null ? profile.companyName : 'Recruiter'}, 'ROLE_COMPANY')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header & Search Filter -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Scheduled Interview Rounds
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Coordinate technical assessments, panel discussions, and HR rounds for shortlisted candidates.
+                    </p>
+                </div>
+
+                <!-- Instant Table Search -->
+                <div style="max-width: 320px; width: 100%;">
+                    <input type="text" class="form-control" data-table-filter="interviewsTable"
+                           placeholder="Filter candidate, round, date..." style="font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <!-- Interviews Table Card -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table" id="interviewsTable" style="margin-bottom: 0;">
+                        <thead>
+                        <tr>
+                            <th>Candidate</th>
+                            <th>Job Role</th>
+                            <th>Round Details</th>
+                            <th>Scheduled Date &amp; Time</th>
+                            <th>Venue / Link</th>
+                            <th>Interviewer</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="interview : ${interviews}">
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a;" th:text="${interview.application.student.fullName}">Candidate Name</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="${interview.application.student.rollNumber}">22CSE045</div>
+                                <div style="font-size: 0.75rem; color: #94a3b8;" th:if="${interview.application.student.user != null}" th:text="${interview.application.student.user.email}">student@college.edu</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: #1e293b;" th:text="${interview.application.jobPosting.jobTitle}">Software Development Engineer</div>
+                                <div style="font-size: 0.75rem; color: #2563eb; font-weight: 600;" th:text="${interview.application.jobPosting.formattedSalary}">12.0 LPA</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a;" th:text="${interview.roundName}">Technical Round 1</div>
+                                <span class="badge" th:classappend="${interview.format == 'Online'} ? 'badge-primary' : 'badge-neutral'"
+                                      style="font-size: 0.7rem; margin-top: 0.25rem;" th:text="${interview.format}">
+                                    Online
+                                </span>
+                            </td>
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a;"
+                                     th:text="${#temporals.format(interview.scheduledDateTime, 'dd MMM yyyy')}">15 Oct 2026</div>
+                                <div style="font-size: 0.75rem; color: #64748b;"
+                                     th:text="${#temporals.format(interview.scheduledDateTime, 'hh:mm a')}">10:30 AM</div>
+                            </td>
+                            <td>
+                                <div th:if="${interview.venueOrLink.startsWith('http://') or interview.venueOrLink.startsWith('https://')}">
+                                    <a th:href="${interview.venueOrLink}" target="_blank" rel="noopener noreferrer"
+                                       class="btn btn-outline btn-sm" style="font-size: 0.75rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                        🎥 Join Link &rarr;
+                                    </a>
+                                </div>
+                                <div th:unless="${interview.venueOrLink.startsWith('http://') or interview.venueOrLink.startsWith('https://')}"
+                                     style="font-size: 0.8125rem; color: #334155; font-weight: 500;" th:text="${interview.venueOrLink}">
+                                    Auditorium Hall B
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-size: 0.8125rem; color: #1e293b; font-weight: 500;"
+                                     th:text="${interview.interviewerName != null && !interview.interviewerName.isEmpty() ? interview.interviewerName : 'Assigned Panel'}">
+                                    Panel
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge" th:classappend="${interview.status.badgeClass}"
+                                      th:text="${interview.status.displayName}">
+                                    Scheduled
+                                </span>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${interviews == null or interviews.isEmpty()}">
+                            <td colspan="7" class="text-center" style="padding: 3rem 1.5rem;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🗓️</div>
+                                <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Interviews Scheduled Yet</h3>
+                                <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1rem;">
+                                    When you shortlist candidates from your applicants list and schedule rounds, they will appear here.
+                                </p>
+                                <a th:href="@{/company/applicants}" class="btn btn-primary">Review Candidate Applicants &rarr;</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

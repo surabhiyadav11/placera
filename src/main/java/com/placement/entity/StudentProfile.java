@@ -111,6 +111,18 @@ public class StudentProfile {
         return this.cgpa != null ? String.format("%.2f", this.cgpa) : "N/A";
     }
 
+    public boolean hasUploadedResume() {
+        return this.resumePath != null && !this.resumePath.trim().isEmpty();
+    }
+
+    public String getResumeFilePath() {
+        return this.resumePath;
+    }
+
+    public UserAccount getUser() {
+        return this.userAccount;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

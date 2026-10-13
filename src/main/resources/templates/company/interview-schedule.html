@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Schedule Interview Round')}">
+    <title>Schedule Interview - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Company Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('company', 'interviews')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Schedule Interview Round', ${profile != null ? profile.companyName : 'Recruiter'}, 'ROLE_COMPANY')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Back Link -->
+            <div style="margin-bottom: 1.25rem;">
+                <a th:href="@{/company/applicants}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.35rem;">
+                    &larr; Back to Candidate Roster
+                </a>
+            </div>
+
+            <!-- Card & Form -->
+            <div class="card" style="max-width: 760px;">
+                <div class="card-header">
+                    <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600;">Interview Round Details</h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{'/company/applications/' + ${scheduleDto.jobApplicationId} + '/schedule'}"
+                          th:object="${scheduleDto}" method="POST" id="scheduleInterviewForm">
+                        <input type="hidden" th:field="*{jobApplicationId}">
+
+                        <!-- Round Name -->
+                        <div class="form-group">
+                            <label for="roundName" class="form-label">Interview Round Name <span class="text-danger">*</span></label>
+                            <input type="text" id="roundName" th:field="*{roundName}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('roundName')} ? 'is-invalid' : ''"
+                                   placeholder="e.g. Technical Coding Round 1 / System Design / HR Round" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('roundName')}" th:errors="*{roundName}"></div>
+                        </div>
+
+                        <!-- Date & Time + Interviewer -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label for="scheduledDateTime" class="form-label">Interview Date &amp; Time <span class="text-danger">*</span></label>
+                                <input type="datetime-local" id="scheduledDateTime" th:field="*{scheduledDateTime}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('scheduledDateTime')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('scheduledDateTime')}" th:errors="*{scheduledDateTime}"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="interviewerName" class="form-label">Interviewer / Panelist Name</label>
+                                <input type="text" id="interviewerName" th:field="*{interviewerName}" class="form-control"
+                                       placeholder="e.g. Alex Morgan (Engineering Director)">
+                            </div>
+                        </div>
+
+                        <!-- Venue or Link -->
+                        <div class="form-group">
+                            <label for="venueOrLink" class="form-label">Video Call Link or Campus Venue <span class="text-danger">*</span></label>
+                            <input type="text" id="venueOrLink" th:field="*{venueOrLink}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('venueOrLink')} ? 'is-invalid' : ''"
+                                   placeholder="e.g. https://meet.google.com/abc-defg-hij or Placement Office Lab 3" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('venueOrLink')}" th:errors="*{venueOrLink}"></div>
+                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
+                                If a web link (starting with http/https) is provided, a clickable 'Join Meeting' button will be rendered for the candidate.
+                            </div>
+                        </div>
+
+                        <!-- Preparation Notes / Instructions -->
+                        <div class="form-group">
+                            <label for="feedback" class="form-label">Candidate Preparation Notes / Instructions</label>
+                            <textarea id="feedback" th:field="*{feedback}" class="form-control" rows="3"
+                                      placeholder="e.g. Please join with camera enabled and keep an IDE ready for live Object-Oriented coding..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <button type="submit" class="btn btn-primary btn-lg" id="confirmScheduleBtn">
+                                Confirm &amp; Schedule Round &rarr;
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

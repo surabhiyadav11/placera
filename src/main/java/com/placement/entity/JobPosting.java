@@ -116,6 +116,14 @@ public class JobPosting {
         return this.salaryPackage != null ? String.format("%.1f LPA", this.salaryPackage) : "Disclosed on Selection";
     }
 
+    public String getJobTitle() {
+        return this.title;
+    }
+
+    public Double getCtcLpa() {
+        return this.salaryPackage;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

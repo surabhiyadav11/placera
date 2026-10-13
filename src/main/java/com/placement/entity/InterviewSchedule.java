@@ -111,6 +111,25 @@ public class InterviewSchedule {
         return this.status == InterviewStatus.COMPLETED;
     }
 
+    public JobApplication getJobApplication() {
+        return this.application;
+    }
+
+    public LocalDateTime getInterviewDateTime() {
+        return this.scheduledDateTime;
+    }
+
+    public String getLocationOrLink() {
+        return this.venueOrLink;
+    }
+
+    public String getFormat() {
+        if (this.venueOrLink != null && (this.venueOrLink.startsWith("http://") || this.venueOrLink.startsWith("https://"))) {
+            return "Online";
+        }
+        return "In-Person";
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

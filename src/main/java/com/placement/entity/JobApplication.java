@@ -122,6 +122,10 @@ public class JobApplication {
         return this.status == ApplicationStatus.INTERVIEW_SCHEDULED;
     }
 
+    public ApplicationStatus getApplicationStatus() {
+        return this.status;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

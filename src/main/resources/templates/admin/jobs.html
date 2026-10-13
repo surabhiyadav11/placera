@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Campus Job Openings Oversight')}">
+    <title>Manage Job Openings - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Admin Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('admin', 'jobs')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Job Openings Oversight', 'Admin Portal')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header & Search Filter -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Campus Job Openings Directory
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Audit campus recruitment opportunities, compensation packages, and departmental eligibility constraints.
+                    </p>
+                </div>
+
+                <!-- Instant Table Search -->
+                <div style="max-width: 320px; width: 100%;">
+                    <input type="text" class="form-control" data-table-filter="jobsTable"
+                           placeholder="Filter role, company, salary, branch..." style="font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <!-- Jobs Table Card -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table" id="jobsTable" style="margin-bottom: 0;">
+                        <thead>
+                        <tr>
+                            <th>Role &amp; Company</th>
+                            <th>Package (CTC)</th>
+                            <th>Eligibility Criteria</th>
+                            <th>Type &amp; Location</th>
+                            <th>Application Deadline</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a; font-size: 0.9375rem;" th:text="${job.jobTitle}">Lead Software Engineer</div>
+                                <div style="font-size: 0.8125rem; color: #2563eb; font-weight: 500;" th:text="${job.company.companyName}">Amazon</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 700; color: #16a34a; font-size: 0.9375rem;" th:text="${job.formattedSalary}">22.0 LPA</div>
+                            </td>
+                            <td>
+                                <div style="font-size: 0.8125rem; color: #1e293b; font-weight: 500;">
+                                    Min CGPA: <span th:text="${job.minCgpa != null ? job.minCgpa : 'None'}">7.0</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="'Branches: ' + ${job.eligibleBranches}">Branches: CSE, IT</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: #334155; font-size: 0.8125rem;" th:text="${job.jobType}">Full-Time</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="${job.location != null ? job.location : 'On-Campus'}">Hyderabad</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; font-size: 0.8125rem; color: #0f172a;"
+                                     th:text="${job.applicationDeadline != null ? #temporals.format(job.applicationDeadline, 'dd MMM yyyy') : 'No Deadline'}">
+                                    15 Nov 2026
+                                </div>
+                                <div th:if="${job.isDeadlinePassed()}" style="font-size: 0.7rem; color: #dc2626; font-weight: 600;">
+                                    Deadline Expired
+                                </div>
+                            </td>
+                            <td>
+                                <span th:if="${job.active and !job.isDeadlinePassed()}" class="badge badge-success">Accepting Applications</span>
+                                <span th:if="${job.active and job.isDeadlinePassed()}" class="badge badge-warning">Deadline Passed</span>
+                                <span th:if="${!job.active}" class="badge badge-neutral">Closed / Inactive</span>
+                            </td>
+                            <td style="text-align: right;">
+                                <a th:href="@{'/student/jobs/' + ${job.id}}" target="_blank" class="btn btn-outline btn-sm" style="font-size: 0.75rem;">
+                                    Inspect Details &rarr;
+                                </a>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${jobs == null or jobs.isEmpty()}">
+                            <td colspan="7" class="text-center" style="padding: 3rem 1.5rem;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📂</div>
+                                <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Campus Openings Registered</h3>
+                                <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0;">
+                                    When accredited companies create job postings, they will appear here for institutional oversight.
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

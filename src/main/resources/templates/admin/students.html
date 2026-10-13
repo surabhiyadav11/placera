@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Student Accounts Oversight')}">
+    <title>Student Accounts - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Admin Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('admin', 'students')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Student Accounts Oversight', 'Admin Portal')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header & Search Filter -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Institutional Student Accounts &amp; Moderation
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Inspect academic credentials, verify uploaded resumes, and manage student placement portal access.
+                    </p>
+                </div>
+
+                <!-- Instant Table Search + Server Query Form -->
+                <div style="display: flex; gap: 0.5rem; max-width: 420px; width: 100%;">
+                    <form th:action="@{/admin/students}" method="GET" style="display: flex; gap: 0.5rem; width: 100%; margin: 0;">
+                        <input type="text" name="keyword" th:value="${keyword}" class="form-control"
+                               data-table-filter="studentsTable"
+                               placeholder="Search roll, name, branch..." style="font-size: 0.875rem;">
+                        <button type="submit" class="btn btn-outline btn-sm" style="white-space: nowrap;">Search</button>
+                        <a th:if="${keyword != null and !keyword.isEmpty()}" th:href="@{/admin/students}"
+                           class="btn btn-secondary btn-sm" style="white-space: nowrap;">Clear</a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Students Table Card -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table" id="studentsTable" style="margin-bottom: 0;">
+                        <thead>
+                        <tr>
+                            <th>Student Details</th>
+                            <th>Branch &amp; Batch</th>
+                            <th>CGPA</th>
+                            <th>Skills</th>
+                            <th>Verified Resume</th>
+                            <th>Account Status</th>
+                            <th style="text-align: right;">Moderation Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="student : ${students}">
+                            <td>
+                                <div style="font-weight: 600; color: #0f172a;" th:text="${student.fullName}">John Doe</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="${student.rollNumber}">22CSE001</div>
+                                <div style="font-size: 0.75rem; color: #94a3b8;" th:if="${student.user != null}" th:text="${student.user.email}">john@college.edu</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 500; color: #1e293b;" th:text="${student.branch}">Computer Science</div>
+                                <div style="font-size: 0.75rem; color: #64748b;" th:text="'Class of ' + ${student.graduationYear}">Class of 2026</div>
+                            </td>
+                            <td>
+                                <div style="font-weight: 700; color: #2563eb; font-size: 1rem;" th:text="${student.cgpa}">8.75</div>
+                            </td>
+                            <td>
+                                <div style="font-size: 0.8125rem; color: #334155; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                     th:text="${student.skills != null && !student.skills.isEmpty() ? student.skills : 'Not listed'}">
+                                    Java, Spring Boot, MySQL
+                                </div>
+                            </td>
+                            <td>
+                                <div th:if="${student.hasUploadedResume()}">
+                                    <a th:href="@{'/resumes/' + ${student.resumeFilePath}}" target="_blank"
+                                       class="btn btn-outline btn-sm" style="font-size: 0.75rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                        📄 Preview PDF &rarr;
+                                    </a>
+                                </div>
+                                <span th:unless="${student.hasUploadedResume()}" class="badge badge-neutral" style="font-size: 0.75rem;">
+                                    Pending Upload
+                                </span>
+                            </td>
+                            <td>
+                                <span th:if="${student.userAccount.enabled}" class="badge badge-success">Active</span>
+                                <span th:unless="${student.userAccount.enabled}" class="badge badge-danger">Disabled</span>
+                            </td>
+                            <td style="text-align: right;">
+                                <form th:action="@{'/admin/students/' + ${student.id} + '/toggle'}" method="POST" style="margin: 0; display: inline-block;">
+                                    <input type="hidden" name="enabled" th:value="${!student.userAccount.enabled}">
+                                    <button th:if="${student.userAccount.enabled}" type="submit" class="btn btn-secondary btn-sm"
+                                            style="font-size: 0.75rem; color: #dc2626;"
+                                            onclick="return confirm('Disable this student account?');">
+                                        Disable Access
+                                    </button>
+                                    <button th:unless="${student.userAccount.enabled}" type="submit" class="btn btn-success btn-sm"
+                                            style="font-size: 0.75rem;">
+                                        Reactivate
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr th:if="${students == null or students.isEmpty()}">
+                            <td colspan="7" class="text-center" style="padding: 3rem 1.5rem;">
+                                <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎓</div>
+                                <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Student Accounts Found</h3>
+                                <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0;">
+                                    Registered candidate accounts will appear in this administrative roster.
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

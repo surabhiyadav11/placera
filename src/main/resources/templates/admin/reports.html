@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Placement Analytics & Reports')}">
+    <title>Placement Reports - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Admin Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('admin', 'reports')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Placement Reports', 'Admin Portal')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header with Print & Export Action -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+                <div>
+                    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                        Institutional Placement Analytics &amp; Reports
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                        Comprehensive statistics, candidate selection funnel, and departmental placement metrics.
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="window.print();">
+                        🖨️ Print Report
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm"
+                            onclick="alert('Institutional CSV report ready for download.');">
+                        📥 Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Macro Metrics Grid -->
+            <div class="grid grid-cols-4" style="gap: 1.25rem; margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-label">Total Registered Students</div>
+                    <div class="stat-value" th:text="${stats.totalStudents}">120</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">Candidates across all branches</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Placed Candidates</div>
+                    <div class="stat-value" style="color: #16a34a;" th:text="${stats.placedStudents}">45</div>
+                    <div style="font-size: 0.75rem; color: #16a34a; font-weight: 600; margin-top: 0.5rem;">
+                        Placement Rate: <span th:text="${stats.formattedPlacementPercentage}">37.5%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Active Campus Openings</div>
+                    <div class="stat-value" style="color: #2563eb;" th:text="${stats.activeJobOpenings}">14</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">Published by corporate recruiters</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Total Applications Filed</div>
+                    <div class="stat-value" style="color: #7c3aed;" th:text="${stats.totalApplications}">85</div>
+                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">Across all recruitment rounds</div>
+                </div>
+            </div>
+
+            <!-- Candidate Selection Conversion Funnel Card -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                        📊 Candidate Recruitment Funnel Breakdown
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; text-align: center;">
+                        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem;">
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">1. Submitted</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #2563eb; margin: 0.25rem 0;" th:text="${stats.totalApplications}">85</div>
+                            <span class="badge badge-primary">Initial Intake</span>
+                        </div>
+
+                        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem;">
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">2. Shortlisted</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #d97706; margin: 0.25rem 0;" th:text="${shortlistedCount}">24</div>
+                            <span class="badge badge-warning">Profile Cleared</span>
+                        </div>
+
+                        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem;">
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">3. Interviewed</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #0284c7; margin: 0.25rem 0;" th:text="${interviewScheduledCount}">18</div>
+                            <span class="badge badge-info">Rounds Held</span>
+                        </div>
+
+                        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 1.25rem;">
+                            <div style="font-size: 0.75rem; color: #166534; font-weight: 600; text-transform: uppercase;">4. Selected / Placed</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #16a34a; margin: 0.25rem 0;" th:text="${selectedCount}">12</div>
+                            <span class="badge badge-success">Offers Issued</span>
+                        </div>
+
+                        <div style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 1.25rem;">
+                            <div style="font-size: 0.75rem; color: #991b1b; font-weight: 600; text-transform: uppercase;">5. Not Selected</div>
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #dc2626; margin: 0.25rem 0;" th:text="${rejectedCount}">8</div>
+                            <span class="badge badge-danger">Archived</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two-Column Tables: Campus Job Compensation Summary & Candidate Pool Status -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <!-- Campus Openings Compensation Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            💼 Compensation Summary by Opportunity
+                        </h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table" style="margin-bottom: 0;">
+                                <thead>
+                                <tr>
+                                    <th>Role &amp; Employer</th>
+                                    <th>Package (LPA)</th>
+                                    <th>Cutoff CGPA</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="job : ${jobs}">
+                                    <td>
+                                        <div style="font-weight: 600; color: #0f172a;" th:text="${job.jobTitle}">Backend Engineer</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;" th:text="${job.company.companyName}">Adobe</div>
+                                    </td>
+                                    <td>
+                                        <div style="font-weight: 700; color: #16a34a;" th:text="${job.formattedSalary}">16.0 LPA</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-neutral" th:text="${job.minCgpa != null ? job.minCgpa : 'None'}">7.5</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${job.active}" class="badge badge-success">Active</span>
+                                        <span th:unless="${job.active}" class="badge badge-neutral">Closed</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${jobs == null or jobs.isEmpty()}">
+                                    <td colspan="4" class="text-center" style="padding: 2rem; color: #64748b;">
+                                        No registered campus jobs recorded.
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Candidate Pool Overview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            🎓 Student Candidate Credentials Sample
+                        </h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table" style="margin-bottom: 0;">
+                                <thead>
+                                <tr>
+                                    <th>Candidate Name</th>
+                                    <th>Branch</th>
+                                    <th>CGPA</th>
+                                    <th>Resume Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="student : ${students != null ? students.stream().limit(8).toList() : {}}">
+                                    <td>
+                                        <div style="font-weight: 600; color: #0f172a;" th:text="${student.fullName}">Rahul S</div>
+                                        <div style="font-size: 0.75rem; color: #64748b;" th:text="${student.rollNumber}">22CSE011</div>
+                                    </td>
+                                    <td style="font-size: 0.8125rem; color: #1e293b;" th:text="${student.branch}">CSE</td>
+                                    <td>
+                                        <div style="font-weight: 700; color: #2563eb;" th:text="${student.cgpa}">8.90</div>
+                                    </td>
+                                    <td>
+                                        <span th:if="${student.hasUploadedResume()}" class="badge badge-success">Verified PDF</span>
+                                        <span th:unless="${student.hasUploadedResume()}" class="badge badge-neutral">Pending</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${students == null or students.isEmpty()}">
+                                    <td colspan="4" class="text-center" style="padding: 2rem; color: #64748b;">
+                                        No students registered yet.
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

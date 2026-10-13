@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/fragments :: htmlHead('Placement Drives & Campaigns')}">
+    <title>Placement Drives - Placera</title>
+</head>
+<body>
+
+<div class="portal-layout">
+    <!-- Admin Sidebar Fragment -->
+    <aside th:replace="~{layout/fragments :: sidebar('admin', 'drives')}"></aside>
+
+    <!-- Main Content Area -->
+    <main class="portal-main">
+        <!-- Topbar Fragment -->
+        <header th:replace="~{layout/fragments :: topbar('Placement Drives', 'Admin Portal')}"></header>
+
+        <!-- Portal Body -->
+        <div class="portal-content">
+            <!-- Flash Alerts -->
+            <div th:replace="~{layout/fragments :: flashAlerts}"></div>
+
+            <!-- Page Header -->
+            <div style="margin-bottom: 1.75rem;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin: 0 0 0.25rem 0;">
+                    Institutional Placement Drives &amp; Campaigns
+                </h1>
+                <p style="color: #64748b; font-size: 0.875rem; margin: 0;">
+                    Schedule recruitment seasons, assign faculty placement officers, and monitor drive timelines.
+                </p>
+            </div>
+
+            <!-- 2-Column Layout: Create Drive Form & Drives Directory -->
+            <div style="display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 1.75rem; align-items: start;">
+                <!-- Create Drive Form Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            + Schedule New Placement Drive
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/drives/new}" th:object="${newDrive}" method="POST" id="newDriveForm">
+                            <!-- Drive Name -->
+                            <div class="form-group">
+                                <label for="driveName" class="form-label">Drive Title <span class="text-danger">*</span></label>
+                                <input type="text" id="driveName" th:field="*{driveName}" class="form-control"
+                                       placeholder="e.g. Annual Campus Placement Drive 2026" required>
+                            </div>
+
+                            <!-- Academic Year & Coordinator -->
+                            <div class="form-group">
+                                <label for="academicYear" class="form-label">Academic Year <span class="text-danger">*</span></label>
+                                <input type="text" id="academicYear" th:field="*{academicYear}" class="form-control"
+                                       placeholder="e.g. 2025-2026" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="coordinator" class="form-label">Faculty Coordinator / Officer</label>
+                                <input type="text" id="coordinator" th:field="*{coordinator}" class="form-control"
+                                       placeholder="e.g. Dr. A. Sharma (Head - T&amp;P)">
+                            </div>
+
+                            <!-- Dates Grid -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <div class="form-group">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" id="startDate" th:field="*{startDate}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" id="endDate" th:field="*{endDate}" class="form-control">
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="form-group">
+                                <label for="status" class="form-label">Drive Status</label>
+                                <select id="status" th:field="*{status}" class="form-control">
+                                    <option th:each="st : ${T(com.placement.entity.PlacementDrive.DriveStatus).values()}"
+                                            th:value="${st}" th:text="${st.displayName}"></option>
+                                </select>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label for="description" class="form-label">Drive Overview / Guidelines</label>
+                                <textarea id="description" th:field="*{description}" class="form-control" rows="3"
+                                          placeholder="e.g. Phase 1 campus recruitment covering Tier-1 dream companies and core engineering firms..."></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-group" style="margin-top: 1.25rem;">
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                    Create Placement Drive &rarr;
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Existing Drives List Card -->
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 1.0625rem; font-weight: 600; color: #0f172a;">
+                            🗓️ Institutional Drives History
+                        </h3>
+                        <span class="badge badge-neutral" th:text="${drives != null ? drives.size() + ' Drives' : '0 Drives'}">
+                            3 Drives
+                        </span>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-responsive">
+                            <table class="table" style="margin-bottom: 0;">
+                                <thead>
+                                <tr>
+                                    <th>Drive Details</th>
+                                    <th>Academic Year</th>
+                                    <th>Timeline</th>
+                                    <th>Faculty Coordinator</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="drive : ${drives}">
+                                    <td>
+                                        <div style="font-weight: 600; color: #0f172a;" th:text="${drive.driveName}">Main Campus Placement 2026</div>
+                                        <div style="font-size: 0.75rem; color: #64748b; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                             th:if="${drive.description != null}" th:text="${drive.description}">
+                                            Tier-1 dream companies recruitment drive
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-neutral" style="font-weight: 600;" th:text="${drive.academicYear}">2025-2026</span>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 0.8125rem; color: #1e293b; font-weight: 500;"
+                                             th:text="${(drive.startDate != null ? #temporals.format(drive.startDate, 'dd MMM yyyy') : 'TBD') + ' - ' + (drive.endDate != null ? #temporals.format(drive.endDate, 'dd MMM yyyy') : 'TBD')}">
+                                            01 Sep 2026 - 31 Dec 2026
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="font-size: 0.8125rem; color: #334155;"
+                                             th:text="${drive.coordinator != null && !drive.coordinator.isEmpty() ? drive.coordinator : 'Placement Cell'}">
+                                            Prof. Dr. Verma
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge" th:classappend="${drive.status.badgeClass}"
+                                              th:text="${drive.status.displayName}">
+                                            Ongoing
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty State -->
+                                <tr th:if="${drives == null or drives.isEmpty()}">
+                                    <td colspan="5" class="text-center" style="padding: 3rem 1.5rem;">
+                                        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📅</div>
+                                        <h3 style="font-size: 1.125rem; font-weight: 600; color: #0f172a; margin-bottom: 0.5rem;">No Placement Drives Created</h3>
+                                        <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0;">
+                                            Use the form on the left to schedule the institutional placement calendar.
+                                        </p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

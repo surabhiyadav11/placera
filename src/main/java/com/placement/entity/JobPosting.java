@@ -124,6 +124,14 @@ public class JobPosting {
         return this.salaryPackage;
     }
 
+    public String getJobDescription() {
+        return this.description;
+    }
+
+    public LocalDate getDeadline() {
+        return this.applicationDeadline;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;

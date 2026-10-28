@@ -183,6 +183,47 @@
     </div>
 </header>
 
+<!-- Reusable Public Footer Fragment -->
+<footer th:fragment="footer" class="public-footer" style="background: #0f172a; color: #94a3b8; padding: 3rem 1.5rem 2rem 1.5rem; margin-top: auto; border-top: 1px solid #1e293b;">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <div style="width: 32px; height: 32px; background: #2563eb; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700;">P</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: white;">Placera</div>
+            </div>
+            <p style="font-size: 0.875rem; color: #64748b; line-height: 1.5; margin: 0;">
+                Campus Placement Management System — Streamlining recruitment drives, candidate profiles, and corporate partnerships.
+            </p>
+        </div>
+        <div>
+            <h4 style="color: white; font-size: 0.9375rem; margin: 0 0 0.75rem 0; font-weight: 600;">Portals</h4>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <li><a th:href="@{/login}" style="color: #94a3b8; text-decoration: none;">Sign In</a></li>
+                <li><a th:href="@{/register/student}" style="color: #94a3b8; text-decoration: none;">Student Registration</a></li>
+                <li><a th:href="@{/register/company}" style="color: #94a3b8; text-decoration: none;">Recruiter Registration</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color: white; font-size: 0.9375rem; margin: 0 0 0.75rem 0; font-weight: 600;">Navigation</h4>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <li><a th:href="@{/}" style="color: #94a3b8; text-decoration: none;">Home</a></li>
+                <li><a th:href="@{/about}" style="color: #94a3b8; text-decoration: none;">About Placement Cell</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 style="color: white; font-size: 0.9375rem; margin: 0 0 0.75rem 0; font-weight: 600;">Placement Cell</h4>
+            <p style="font-size: 0.875rem; color: #64748b; line-height: 1.5; margin: 0;">
+                Office of Training &amp; Placement<br>
+                Email: placement@college.edu<br>
+                Phone: +91 (0) 123 456 7890
+            </p>
+        </div>
+    </div>
+    <div style="max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid #1e293b; text-align: center; font-size: 0.8125rem; color: #475569;">
+        &copy; 2026 Placera Campus Placement Management System. All rights reserved.
+    </div>
+</footer>
+
 <div th:fragment="scripts">
     <script th:src="@{/js/main.js}"></script>
 </div>
